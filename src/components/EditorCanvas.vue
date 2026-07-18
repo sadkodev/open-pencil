@@ -58,7 +58,10 @@ const {
   autoLayoutPaddingEdit,
   updateAutoLayoutPaddingEdit,
   commitAutoLayoutPaddingEdit,
-  cancelAutoLayoutPaddingEdit
+  cancelAutoLayoutPaddingEdit,
+  frameTitleRename,
+  commitFrameTitleRename,
+  cancelFrameTitleRename
 } = useCanvasInput(
   canvasRef,
   store,
@@ -96,6 +99,24 @@ const paddingEditorIcon = computed(() => {
   const edit = autoLayoutPaddingEdit.value
   return edit ? paddingSideIcons[edit.side] : IconLucidePanelTop
 })
+
+const renameAnchor = computed(() => {
+  const edit = frameTitleRename.value
+  if (!edit) return null
+  const abs = store.graph.getAbsolutePosition(edit.nodeId)
+  return abs ? { x: abs.x, y: abs.y } : null
+})
+const renameReference = useCanvasVirtualReference(canvasRef, store, renameAnchor)
+
+function onRenameKeydown(e: KeyboardEvent) {
+  if (e.code === 'Enter') {
+    e.preventDefault()
+    ;(e.target as HTMLInputElement).blur()
+  } else if (e.code === 'Escape') {
+    e.preventDefault()
+    cancelFrameTitleRename()
+  }
+}
 
 const cursor = computed(() => toolCursor(store.state.activeTool, cursorOverride.value))
 </script>
@@ -164,6 +185,29 @@ const cursor = computed(() => toolCursor(store.state.activeTool, cursorOverride.
                   <component :is="paddingEditorIcon" class="size-3.5" />
                 </template>
               </NumberField>
+            </PopoverContent>
+          </PopoverPortal>
+        </PopoverRoot>
+        <PopoverRoot :open="!!frameTitleRename">
+          <PopoverPortal>
+            <PopoverContent
+              v-if="frameTitleRename && renameReference"
+              :reference="renameReference"
+              side="top"
+              align="start"
+              :side-offset="4"
+              :collision-padding="8"
+              class="z-50 min-w-32 rounded-md bg-panel p-1 shadow-lg"
+              data-test-id="frame-title-rename"
+              @open-auto-focus.prevent
+            >
+              <input
+                :value="frameTitleRename.name"
+                data-test-id="frame-title-rename-input"
+                class="w-full rounded-sm border border-transparent bg-panel-field px-2 py-1 text-sm text-surface outline-none focus:border-panel-focus"
+                @blur="commitFrameTitleRename(($event.target as HTMLInputElement).value)"
+                @keydown="onRenameKeydown"
+              />
             </PopoverContent>
           </PopoverPortal>
         </PopoverRoot>

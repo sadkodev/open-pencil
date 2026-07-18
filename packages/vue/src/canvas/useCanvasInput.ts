@@ -48,6 +48,7 @@ export function useCanvasInput(
     value: number
     previous: number
   } | null>(null)
+  const frameTitleRename = ref<{ nodeId: string; name: string } | null>(null)
   const selectedIdsBeforeClickSequence = ref<ReadonlySet<string>>(new Set())
   const spaceHeld = useSpaceHeld()
   const { recordClick, getClickCount } = createClickCounter()
@@ -142,8 +143,30 @@ export function useCanvasInput(
     autoLayoutPaddingEdit.value = null
   }
 
+  function startFrameTitleRename(nodeId: string) {
+    const node = editor.graph.getNode(nodeId)
+    if (!node) return
+    frameTitleRename.value = { nodeId, name: node.name }
+  }
+
+  function commitFrameTitleRename(value: string) {
+    const edit = frameTitleRename.value
+    if (edit) editor.renameNode(edit.nodeId, value)
+    frameTitleRename.value = null
+  }
+
+  function cancelFrameTitleRename() {
+    frameTitleRename.value = null
+  }
+
   function onDblClick(e: MouseEvent) {
     if (startAutoLayoutPaddingEdit(e)) return
+    const { cx, cy } = getCoords(e)
+    const titleHit = hitTestFrameTitle(cx, cy)
+    if (titleHit) {
+      startFrameTitleRename(titleHit.id)
+      return
+    }
     onTextDblClick(e)
   }
 
@@ -302,6 +325,9 @@ export function useCanvasInput(
     autoLayoutPaddingEdit,
     updateAutoLayoutPaddingEdit,
     commitAutoLayoutPaddingEdit,
-    cancelAutoLayoutPaddingEdit
+    cancelAutoLayoutPaddingEdit,
+    frameTitleRename,
+    commitFrameTitleRename,
+    cancelFrameTitleRename
   }
 }
