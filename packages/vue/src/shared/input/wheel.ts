@@ -37,7 +37,7 @@ export function computeWheelPanDelta(e: WheelPanInput): { dx: number; dy: number
     deltaY *= 800
   }
   if (e.shiftKey) {
-    return { dx: deltaY, dy: 0 }
+    return { dx: deltaX + deltaY, dy: 0 }
   }
   return { dx: deltaX, dy: deltaY }
 }

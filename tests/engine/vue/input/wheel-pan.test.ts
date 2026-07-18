@@ -30,18 +30,18 @@ describe('computeWheelPanDelta', () => {
     expect(computeWheelPanDelta(e)).toEqual({ dx: 0, dy: 100 })
   })
 
-  test('shift + horizontal wheel: dy is zero', () => {
+  test('shift + horizontal wheel: dx preserved', () => {
     const e = fakeWheelEvent({ deltaX: 100, shiftKey: true })
-    expect(computeWheelPanDelta(e)).toEqual({ dx: 0, dy: 0 })
+    expect(computeWheelPanDelta(e)).toEqual({ dx: 100, dy: 0 })
   })
 
-  test('line mode scales both axes', () => {
+  test('line mode sums both scaled axes with shift', () => {
     const e = fakeWheelEvent({
       deltaX: 1,
       deltaY: 2,
       deltaMode: 1,
       shiftKey: true
     })
-    expect(computeWheelPanDelta(e)).toEqual({ dx: 80, dy: 0 })
+    expect(computeWheelPanDelta(e)).toEqual({ dx: 120, dy: 0 })
   })
 })
