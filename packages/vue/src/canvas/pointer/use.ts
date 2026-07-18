@@ -6,6 +6,7 @@ import type { SceneNode } from '@open-pencil/scene-graph'
 import {
   canvasToLocalPoint,
   getPointerCoords,
+  hitTestFrameBorder,
   hitTestInEditorScope,
   isInsideEditorContainerBounds
 } from '#vue/shared/input/geometry'
@@ -30,7 +31,8 @@ export function createCanvasPointer(
     isInsideContainerBounds,
     hitTestSectionTitle,
     hitTestComponentLabel,
-    hitTestFrameTitle
+    hitTestFrameTitle,
+    hitTestFrameBorder: (cx: number, cy: number) => hitTestFrameBorder(cx, cy, editor)
   }
 
   return {

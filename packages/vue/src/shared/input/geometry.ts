@@ -67,6 +67,36 @@ export function hitTestInEditorScope(
     : editor.graph.hitTest(cx, cy, editor.state.currentPageId)
 }
 
+const FRAME_BORDER_HIT_THRESHOLD_PX = 6
+
+export function hitTestFrameBorder(cx: number, cy: number, editor: Editor): SceneNode | null {
+  const threshold = FRAME_BORDER_HIT_THRESHOLD_PX / editor.state.zoom
+  const scopeId = editor.state.enteredContainerId ?? editor.state.currentPageId
+  const scope = editor.graph.getNode(scopeId)
+  if (!scope) return null
+  for (const childId of scope.childIds) {
+    const child = editor.graph.getNode(childId)
+    if (!child?.visible || child.type !== 'FRAME') continue
+    const abs = editor.graph.getAbsolutePosition(childId)
+    const left = abs.x
+    const top = abs.y
+    const right = abs.x + child.width
+    const bottom = abs.y + child.height
+    const insideOuter =
+      cx >= left - threshold &&
+      cx <= right + threshold &&
+      cy >= top - threshold &&
+      cy <= bottom + threshold
+    const insideInner =
+      cx >= left + threshold &&
+      cx <= right - threshold &&
+      cy >= top + threshold &&
+      cy <= bottom - threshold
+    if (insideOuter && !insideInner) return child
+  }
+  return null
+}
+
 export function isInsideEditorContainerBounds(
   cx: number,
   cy: number,

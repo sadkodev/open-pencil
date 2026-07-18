@@ -18,6 +18,9 @@ export function resolveHit(
   const hit = fns.hitTestInScope(cx, cy, false)
   if (hit) return hit
 
+  const borderHit = fns.hitTestFrameBorder(cx, cy)
+  if (borderHit) return borderHit
+
   const scopeId = editor.state.enteredContainerId
   if (!scopeId) return null
 

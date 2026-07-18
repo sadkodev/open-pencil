@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, type Component } from 'vue'
+import { computed, ref, watch, type Component } from 'vue'
 import {
   AUTO_LAYOUT_PADDING_EDITOR_OFFSET_X,
   AUTO_LAYOUT_PADDING_EDITOR_OFFSET_Y
@@ -118,6 +118,33 @@ function onRenameKeydown(e: KeyboardEvent) {
   }
 }
 
+const renameInputRef = ref<HTMLInputElement | null>(null)
+
+watch(
+  () => frameTitleRename.value,
+  (edit) => {
+    if (edit) {
+      requestAnimationFrame(() => {
+        const input = renameInputRef.value
+        if (input) {
+          input.focus()
+          input.select()
+        }
+      })
+    }
+  }
+)
+
+watch(
+  () => store.state.selectedIds,
+  (selectedIds) => {
+    const edit = frameTitleRename.value
+    if (edit && !selectedIds.has(edit.nodeId)) {
+      cancelFrameTitleRename()
+    }
+  }
+)
+
 const cursor = computed(() => toolCursor(store.state.activeTool, cursorOverride.value))
 </script>
 
@@ -197,14 +224,15 @@ const cursor = computed(() => toolCursor(store.state.activeTool, cursorOverride.
               align="start"
               :side-offset="4"
               :collision-padding="8"
-              class="z-50 min-w-32 rounded-md bg-panel p-1 shadow-lg"
+              class="z-50 w-28 rounded-md bg-panel p-0.5 shadow-lg"
               data-test-id="frame-title-rename"
               @open-auto-focus.prevent
             >
               <input
+                ref="renameInputRef"
                 :value="frameTitleRename.name"
                 data-test-id="frame-title-rename-input"
-                class="w-full rounded-sm border border-transparent bg-panel-field px-2 py-1 text-sm text-surface outline-none focus:border-panel-focus"
+                class="w-full rounded-sm border border-transparent bg-panel-field px-1.5 py-0.5 text-xs text-surface outline-none focus:border-panel-focus"
                 @blur="commitFrameTitleRename(($event.target as HTMLInputElement).value)"
                 @keydown="onRenameKeydown"
               />
