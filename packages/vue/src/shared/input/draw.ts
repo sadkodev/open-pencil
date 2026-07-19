@@ -28,7 +28,7 @@ export function startShapeDraw(
   let parentOffsetY = 0
   let shapeX = cx
   let shapeY = cy
-  if (container && container.type === 'FRAME') {
+  if (container?.type === 'FRAME') {
     const abs = editor.graph.getAbsolutePosition(container.id)
     parentId = container.id
     parentOffsetX = abs.x

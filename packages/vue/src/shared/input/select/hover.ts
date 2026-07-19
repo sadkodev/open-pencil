@@ -45,7 +45,10 @@ function updateHoveredNode(
   cx: number,
   cy: number,
   editor: Editor,
-  fns: Pick<HitTestFns, 'hitTestInScope' | 'hitTestSectionTitle' | 'hitTestComponentLabel' | 'hitTestFrameTitles'>
+  fns: Pick<
+    HitTestFns,
+    'hitTestInScope' | 'hitTestSectionTitle' | 'hitTestComponentLabel' | 'hitTestFrameTitles'
+  >
 ) {
   const hit =
     fns.hitTestFrameTitles(cx, cy) ??
@@ -62,7 +65,10 @@ export function updateHoverCursor(
   cx: number,
   cy: number,
   editor: Editor,
-  fns: Pick<HitTestFns, 'hitTestInScope' | 'hitTestSectionTitle' | 'hitTestComponentLabel' | 'hitTestFrameTitles'>
+  fns: Pick<
+    HitTestFns,
+    'hitTestInScope' | 'hitTestSectionTitle' | 'hitTestComponentLabel' | 'hitTestFrameTitles'
+  >
 ): string | null {
   if (getNodeEditState(editor)) {
     editor.setHoveredNode(null)

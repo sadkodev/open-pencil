@@ -46,13 +46,10 @@ useCanvas(sceneCanvasRef, store, {
   showRulers: false,
   onReady: fadeOutGlobalLoader
 })
-const { hitTestSectionTitle, hitTestComponentLabel, hitTestFrameTitle, hitTestFrameTitles } = useCanvas(
-  canvasRef,
-  store,
-  {
+const { hitTestSectionTitle, hitTestComponentLabel, hitTestFrameTitle, hitTestFrameTitles } =
+  useCanvas(canvasRef, store, {
     layer: 'overlays'
-  }
-)
+  })
 const {
   cursorOverride,
   autoLayoutPaddingEdit,
@@ -120,7 +117,6 @@ function onRenameKeydown(e: KeyboardEvent) {
 }
 
 const renameInputRef = ref<HTMLInputElement | null>(null)
-const renameMirrorRef = ref<HTMLSpanElement | null>(null)
 const renameValue = ref('')
 
 const renameMaxWidth = computed(() => {
@@ -130,10 +126,6 @@ const renameMaxWidth = computed(() => {
   if (!node) return 120
   return Math.max(40, node.width * store.state.zoom)
 })
-
-function onRenameInput(e: Event) {
-  renameValue.value = (e.target as HTMLInputElement).value
-}
 
 watch(
   () => frameTitleRename.value,
@@ -250,7 +242,8 @@ const cursor = computed(() => toolCursor(store.state.activeTool, cursorOverride.
                 <span
                   class="invisible whitespace-pre rounded-sm px-1.5 py-0.5 text-xs"
                   aria-hidden="true"
-                >{{ renameValue || ' ' }}&nbsp;</span>
+                  >{{ renameValue || ' ' }}&nbsp;</span
+                >
                 <input
                   ref="renameInputRef"
                   v-model="renameValue"

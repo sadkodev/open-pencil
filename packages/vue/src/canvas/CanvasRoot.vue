@@ -11,17 +11,19 @@ const editor = useEditor()
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 const ready = ref(false)
 
-const { renderNow, hitTestSectionTitle, hitTestComponentLabel, hitTestFrameTitle, hitTestFrameTitles } = useCanvas(
-  canvasRef,
-  editor,
-  {
-    showRulers,
-    preserveDrawingBuffer,
-    onReady: () => {
-      ready.value = true
-    }
+const {
+  renderNow,
+  hitTestSectionTitle,
+  hitTestComponentLabel,
+  hitTestFrameTitle,
+  hitTestFrameTitles
+} = useCanvas(canvasRef, editor, {
+  showRulers,
+  preserveDrawingBuffer,
+  onReady: () => {
+    ready.value = true
   }
-)
+})
 
 provideCanvas({
   canvasRef,

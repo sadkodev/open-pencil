@@ -210,7 +210,13 @@ export function render(
   if (layer !== 'scene') {
     canvas.save()
     canvas.scale(r.dpr, r.dpr)
-    r.labelCache.update(graph, r.pageId, sceneVersion, graph.positionPreviewVersion, overlays.enteredContainerId)
+    r.labelCache.update(
+      graph,
+      r.pageId,
+      sceneVersion,
+      graph.positionPreviewVersion,
+      overlays.enteredContainerId
+    )
     p.beginPhase('render:sectionTitles')
     r.drawSectionTitles(canvas, graph)
     p.endPhase('render:sectionTitles')
@@ -218,7 +224,13 @@ export function render(
     r.drawComponentLabels(canvas, graph)
     p.endPhase('render:componentLabels')
     p.beginPhase('render:frameTitles')
-    r.drawFrameTitles(canvas, graph, selectedIds, overlays.hoveredNodeId ?? null, overlays.editingFrameTitleId ?? null)
+    r.drawFrameTitles(
+      canvas,
+      graph,
+      selectedIds,
+      overlays.hoveredNodeId ?? null,
+      overlays.editingFrameTitleId ?? null
+    )
     p.endPhase('render:frameTitles')
     canvas.restore()
 

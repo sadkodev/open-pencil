@@ -132,7 +132,11 @@ export class LabelCache {
     return this.components
   }
 
-  private rebuild(graph: SceneGraph, pageId: string | null, enteredContainerId?: string | null): void {
+  private rebuild(
+    graph: SceneGraph,
+    pageId: string | null,
+    enteredContainerId?: string | null
+  ): void {
     this.sections = []
     this.components = []
     this.frames = []
@@ -172,7 +176,10 @@ export class LabelCache {
       if (child.type === 'SECTION') {
         this.sections.push({ nodeId: childId, absX: ax, absY: ay, nested: insideSection })
         this.walkChildren(graph, childId, ax, ay, true)
-      } else if (child.type === 'FRAME' && (FRAME_TITLE_PARENT_TYPES.has(parentType) || collectNestedFrames)) {
+      } else if (
+        child.type === 'FRAME' &&
+        (FRAME_TITLE_PARENT_TYPES.has(parentType) || collectNestedFrames)
+      ) {
         this.frames.push({ nodeId: childId, absX: ax, absY: ay })
         this.walkChildren(graph, childId, ax, ay, insideSection, false)
       } else if (LABEL_TYPES.has(child.type)) {
