@@ -1,8 +1,9 @@
 import { CORNER_ROTATE_ZONE, HANDLE_HIT_RADIUS } from '@open-pencil/core/constants'
 import type { Editor } from '@open-pencil/core/editor'
 import type { SceneGraph, SceneNode } from '@open-pencil/scene-graph'
-import { getAbsoluteRotation, getWorldHandles } from '@open-pencil/scene-graph/coordinate'
+import { getAbsoluteRotation, getWorldHandles, getWorldMatrix } from '@open-pencil/scene-graph/coordinate'
 import { degToRad } from '@open-pencil/scene-graph/geometry'
+import Matrix from '@open-pencil/scene-graph/matrix'
 import type { Vector } from '@open-pencil/scene-graph/primitives'
 
 import resizeCursorSvg from '#vue/shared/assets/resize-cursor.svg?raw'
@@ -78,21 +79,19 @@ export function hitTestFrameBorder(cx: number, cy: number, editor: Editor): Scen
     const childId = scope.childIds[i]
     const child = editor.graph.getNode(childId)
     if (!child?.visible || child.type !== 'FRAME') continue
-    const abs = editor.graph.getAbsolutePosition(childId)
-    const left = abs.x
-    const top = abs.y
-    const right = abs.x + child.width
-    const bottom = abs.y + child.height
+    const inverse = Matrix.invert(getWorldMatrix(child, editor.graph))
+    if (!inverse) continue
+    const [localX, localY] = Matrix.mapPoints(inverse, [cx, cy])
     const insideOuter =
-      cx >= left - threshold &&
-      cx <= right + threshold &&
-      cy >= top - threshold &&
-      cy <= bottom + threshold
+      localX >= -threshold &&
+      localX <= child.width + threshold &&
+      localY >= -threshold &&
+      localY <= child.height + threshold
     const insideInner =
-      cx >= left + threshold &&
-      cx <= right - threshold &&
-      cy >= top + threshold &&
-      cy <= bottom - threshold
+      localX >= threshold &&
+      localX <= child.width - threshold &&
+      localY >= threshold &&
+      localY <= child.height - threshold
     if (insideOuter && !insideInner) return child
   }
   return null
