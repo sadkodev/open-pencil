@@ -169,22 +169,46 @@ export class LabelCache {
 
       if (child.type === 'SECTION') {
         this.sections.push({ nodeId: childId, absX: ax, absY: ay, nested: insideSection })
-        this.walkChildren(graph, childId, ax, ay, true, false, enteredContainerId)
+        this.walkChildren(graph, childId, ax, ay, true, shouldCollectNested, enteredContainerId)
       } else if (
         child.type === 'FRAME' &&
         (FRAME_TITLE_PARENT_TYPES.has(parentType) || shouldCollectNested)
       ) {
         this.frames.push({ nodeId: childId, absX: ax, absY: ay })
-        this.walkChildren(graph, childId, ax, ay, insideSection, false, enteredContainerId)
+        this.walkChildren(
+          graph,
+          childId,
+          ax,
+          ay,
+          insideSection,
+          shouldCollectNested,
+          enteredContainerId
+        )
       } else if (LABEL_TYPES.has(child.type)) {
         if (COMPONENT_LABEL_PARENT_TYPES.has(parentType)) {
           this.components.push({ nodeId: childId, absX: ax, absY: ay, parentType })
         }
         if (child.childIds.length > 0) {
-          this.walkChildren(graph, childId, ax, ay, insideSection, false, enteredContainerId)
+          this.walkChildren(
+            graph,
+            childId,
+            ax,
+            ay,
+            insideSection,
+            shouldCollectNested,
+            enteredContainerId
+          )
         }
       } else if (child.childIds.length > 0) {
-        this.walkChildren(graph, childId, ax, ay, insideSection, false, enteredContainerId)
+        this.walkChildren(
+          graph,
+          childId,
+          ax,
+          ay,
+          insideSection,
+          shouldCollectNested,
+          enteredContainerId
+        )
       }
     }
   }
