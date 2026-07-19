@@ -1,7 +1,11 @@
 import { CORNER_ROTATE_ZONE, HANDLE_HIT_RADIUS } from '@open-pencil/core/constants'
 import type { Editor } from '@open-pencil/core/editor'
 import type { SceneGraph, SceneNode } from '@open-pencil/scene-graph'
-import { getAbsoluteRotation, getWorldHandles, getWorldMatrix } from '@open-pencil/scene-graph/coordinate'
+import {
+  getAbsoluteRotation,
+  getWorldHandles,
+  getWorldMatrix
+} from '@open-pencil/scene-graph/coordinate'
 import { degToRad } from '@open-pencil/scene-graph/geometry'
 import Matrix from '@open-pencil/scene-graph/matrix'
 import type { Vector } from '@open-pencil/scene-graph/primitives'
