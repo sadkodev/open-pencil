@@ -10,7 +10,6 @@ export function resolveHit(
   fns: HitTestFns
 ): SceneNode | null {
   const titleHit =
-    fns.hitTestFrameTitle(cx, cy) ??
     fns.hitTestFrameTitles(cx, cy) ??
     fns.hitTestSectionTitle(cx, cy) ??
     fns.hitTestComponentLabel(cx, cy)

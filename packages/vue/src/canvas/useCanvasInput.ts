@@ -167,7 +167,7 @@ export function useCanvasInput(
   function onDblClick(e: MouseEvent) {
     if (startAutoLayoutPaddingEdit(e)) return
     const { cx, cy } = getCoords(e)
-    const titleHit = hitTestFrameTitle(cx, cy)
+    const titleHit = hitTestFrameTitles(cx, cy)
     if (titleHit) {
       startFrameTitleRename(titleHit.id)
       return

@@ -243,11 +243,11 @@ const cursor = computed(() => toolCursor(store.state.activeTool, cursorOverride.
               class="z-50 inline-block rounded-md bg-panel p-0.5 shadow-lg"
               data-test-id="frame-title-rename"
               :style="{ maxWidth: `${renameMaxWidth + 12}px` }"
+              @keydown.escape.prevent="cancelFrameTitleRename"
               @open-auto-focus.prevent
             >
               <div class="relative inline-flex" :style="{ maxWidth: `${renameMaxWidth}px` }">
                 <span
-                  ref="renameMirrorRef"
                   class="invisible whitespace-pre rounded-sm px-1.5 py-0.5 text-xs"
                   aria-hidden="true"
                 >{{ renameValue || ' ' }}&nbsp;</span>
