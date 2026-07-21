@@ -32,7 +32,8 @@ import { applyDerivedSymbolData } from './derived-symbol-data'
 import { populateInstances } from './populate'
 import { preComputeRoots } from './resolve'
 import { applySymbolOverrides } from './symbol/overrides'
-import { propagateOverridesTransitively } from './sync'
+import { propagateNodePropsTransitively, propagateOverridesTransitively } from './sync'
+import { indexCloneNodes } from './sync/sources'
 import type { InstanceNodeChange, OverrideContext, ComponentPropValue } from './types'
 
 /**
@@ -233,6 +234,7 @@ function buildOverrideContext(
     propDefaults,
     propNames,
     preComputedRoot: new Map(),
+    preComputedClones: new Map(),
     componentIdRoot: new Map(),
     swappedInstances: new Set(),
     protectedFields: new Map(),
@@ -301,7 +303,10 @@ export function populateAndApplyOverrides(
 
   if (activeRootIds) {
     const populated = populateInstances(graph, activeRootIds)
-    if (populated) ctx.activeNodeIds = populated
+    if (populated) {
+      ctx.activeNodeIds = populated
+      indexCloneNodes(graph, populated, ctx.preComputedClones)
+    }
     const latePropModified = applyComponentProperties(ctx)
     const lateSeeds = new Set([...overriddenNodes, ...propModified, ...latePropModified])
     if (lateSeeds.size > 0) {
@@ -327,4 +332,16 @@ export function populateAndApplyOverrides(
   propagateResolvedTextClones(graph)
   applyConstraintScaling(ctx)
   applyComponentProperties(ctx)
+
+  // Final component-property swaps can replace descendants targeted by earlier
+  // symbol overrides. Replay property-only overrides against the final clone
+  // tree, then propagate those final targets without performing swaps again.
+  const replayedOverrides = applySymbolOverrides(ctx, true)
+  propagateNodePropsTransitively(
+    graph,
+    replayedOverrides,
+    ctx.activeNodeIds,
+    ctx.protectedFields,
+    ctx.preComputedClones
+  )
 }
